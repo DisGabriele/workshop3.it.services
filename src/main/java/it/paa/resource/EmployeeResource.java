@@ -187,24 +187,24 @@ public class EmployeeResource {
             return Response.status(Response.Status.NOT_MODIFIED).build();
         try {
 
-            Employee employee = employeeService.getById(employee_id);
+            Employee old = employeeService.getById(employee_id);
             if (employeeDTO.getName() != null)
-                employee.setName(employeeDTO.getName());
+                old.setName(employeeDTO.getName());
 
             if (employeeDTO.getSurname() != null)
-                employee.setSurname(employeeDTO.getSurname());
+                old.setSurname(employeeDTO.getSurname());
 
             if (employeeDTO.getHiringDate() != null) {
                 LocalDate hiringDate = null;
                 try {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     hiringDate = LocalDate.parse(employeeDTO.getHiringDate(), formatter);
-                    employee.setHiringDate(hiringDate);
+                    old.setHiringDate(hiringDate);
                 } catch (DateTimeParseException e) {
                     try {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                         hiringDate = LocalDate.parse(employeeDTO.getHiringDate(), formatter);
-                        employee.setHiringDate(hiringDate);
+                        old.setHiringDate(hiringDate);
                     } catch (DateTimeParseException ex) {
                         return Response.status(Response.Status.BAD_REQUEST)
                                 .type(MediaType.TEXT_PLAIN)
@@ -222,7 +222,7 @@ public class EmployeeResource {
                             .build();
                 try {
                     Role role = employeeService.getRoleByName(employeeDTO.getRoleName());
-                    employee.setRole(role);
+                    old.setRole(role);
                 } catch (NoResultException e) {
                     return Response.status(Response.Status.NOT_FOUND)
                             .type(MediaType.TEXT_PLAIN)
@@ -232,17 +232,17 @@ public class EmployeeResource {
             }
 
             if (employeeDTO.getSalary() != null) {
-                if (employeeDTO.getSalary() < employee.getRole().getMinSalary()) {
+                if (employeeDTO.getSalary() < old.getRole().getMinSalary()) {
                     return Response.status(Response.Status.BAD_REQUEST)
                             .type(MediaType.TEXT_PLAIN)
                             .entity("employees's salary cannot be lower than role role's minimum salary")
                             .build();
                 } else
-                    employee.setSalary(employeeDTO.getSalary());
+                    old.setSalary(employeeDTO.getSalary());
             }
 
             try {
-                return Response.ok(employeeService.update(employee)).build();
+                return Response.ok(employeeService.update(old)).build();
             } catch (ConstraintViolationException e) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .type(MediaType.TEXT_PLAIN)
