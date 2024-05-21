@@ -24,11 +24,11 @@ public class RoleService implements RoleRepository {
     public List<Role> getAll(String name, Float min_salary) throws NoContentException {
         String query = "SELECT r FROM Role r";
 
-        if(name != null && !name.isEmpty() && !name.isBlank())
+        if (name != null && !name.isEmpty() && !name.isBlank())
             query += " WHERE LOWER(r.name) = LOWER(:name)";
 
-        if(min_salary != null){
-            if(!query.contains("WHERE"))
+        if (min_salary != null) {
+            if (!query.contains("WHERE"))
                 query += " WHERE r.min_salary = :min_salary";
             else
                 query += " AND r.min_salary = :min_salary";
@@ -37,37 +37,25 @@ public class RoleService implements RoleRepository {
 
         TypedQuery<Role> tQuery = entityManager.createQuery(query, Role.class);
 
-        if(name != null)
+        if (name != null)
             tQuery.setParameter("name", name);
 
-        if(min_salary != null)
+        if (min_salary != null)
             tQuery.setParameter("min_salary", min_salary);
 
         List<Role> roles = tQuery.getResultList();
 
-        if(roles.isEmpty())
+        if (roles == null || roles.isEmpty())
             throw new NoContentException("no roles found");
 
         return roles;
-    }
-
-    //metodo per vedere univocità del nome in ignore case per la PUT
-    public boolean checkNameUnique(String name,Long id) {
-        String query = "SELECT r FROM Role r WHERE LOWER(r.name) = LOWER(:name) AND r.id != :id";
-
-        List<Role> roles = entityManager.createQuery(query, Role.class)
-                .setParameter("name",name)
-                .setParameter("id",id)
-                .getResultList();
-
-        return !roles.isEmpty();
     }
 
     @Override
     public Role getById(Long id) throws NotFoundException {
         Role role = entityManager.find(Role.class, id);
 
-        if(role == null){
+        if (role == null) {
             throw new NotFoundException("role not found");
         }
 
@@ -78,22 +66,49 @@ public class RoleService implements RoleRepository {
     @Transactional
     public Role save(Role role) throws PersistenceException, ConstraintViolationException {
         try {
+            String query = "SELECT r FROM Role r WHERE LOWER(r.name) = LOWER(:name)";
+
+            List<Role> roles = entityManager.createQuery(query, Role.class)
+                    .setParameter("name", role.getName())
+                    .getResultList();
+
+            if (!roles.isEmpty())
+                throw new PersistenceException();
+
             entityManager.persist(role);
             entityManager.flush();
 
             return role;
+        } catch (ConstraintViolationException e) {
+            throw new ConstraintViolationException(e.getConstraintViolations());
         } catch (PersistenceException e) {
-            throw new PersistenceException("role with this name already exists");
+            throw new PersistenceException("another role with this name already exists");
         }
     }
 
     @Override
     @Transactional
     public Role update(Role role) throws PersistenceException, ConstraintViolationException {
+        try {
+            String query = "SELECT r FROM Role r WHERE LOWER(r.name) = LOWER(:name) AND r.id != :id";
+
+            List<Role> roles = entityManager.createQuery(query, Role.class)
+                    .setParameter("name", role.getName())
+                    .setParameter("id", role.getId())
+                    .getResultList();
+
+            if (!roles.isEmpty())
+                throw new PersistenceException();
+
             entityManager.merge(role);
             entityManager.flush();
 
             return role;
+        } catch (ConstraintViolationException e) {
+            throw new ConstraintViolationException(e.getConstraintViolations());
+        } catch (PersistenceException e) {
+            throw new PersistenceException("another role with this name already exists");
+        }
 
     }
 

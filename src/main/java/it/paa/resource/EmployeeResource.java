@@ -1,7 +1,7 @@
 package it.paa.resource;
 
-import it.paa.model.dto.EmployeeDTO;
-import it.paa.model.dto.EmployeeUpdateDTO;
+import it.paa.model.dto.employee.EmployeeDTO;
+import it.paa.model.dto.employee.EmployeeUpdateDTO;
 import it.paa.model.entity.Employee;
 import it.paa.model.entity.Role;
 import it.paa.service.EmployeeService;

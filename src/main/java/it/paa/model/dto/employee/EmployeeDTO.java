@@ -1,22 +1,26 @@
-package it.paa.model.dto;
+package it.paa.model.dto.employee;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 
-public class EmployeeUpdateDTO {
+public class EmployeeDTO {
+    @NotBlank(message = "name cannot be empty")
     private String name;
 
+    @NotBlank(message = "surname cannot be empty")
     private String surname;
 
+    @NotBlank(message = "role cannot be empty")
     @JsonProperty("role_name")
     private String roleName;
 
+    @NotBlank(message = "hiring_date cannot be empty")
     @JsonProperty("hiring_date")
     private String hiringDate;
 
     private Integer salary;
 
-    public EmployeeUpdateDTO() {
-    }
+    public EmployeeDTO() {}
 
     public String getName() {
         return name;
@@ -56,13 +60,5 @@ public class EmployeeUpdateDTO {
 
     public void setSalary(Integer salary) {
         this.salary = salary;
-    }
-
-    public boolean allEmpty() {
-        return (this.name == null || this.name.isEmpty() || this.name.isBlank()) &&
-                (this.surname == null || this.surname.isEmpty() || this.surname.isBlank()) &&
-                (this.hiringDate == null || this.hiringDate.isEmpty() || this.hiringDate.isBlank()) &&
-                (this.roleName == null || this.roleName.isEmpty() || this.roleName.isBlank()) &&
-                (this.salary == null);
     }
 }
