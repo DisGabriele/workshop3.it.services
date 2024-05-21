@@ -3,7 +3,7 @@ package it.paa.model.dto.employee;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 
-public class EmployeeDTO {
+public class EmployeePostDTO {
     @NotBlank(message = "name cannot be empty")
     private String name;
 
@@ -20,7 +20,7 @@ public class EmployeeDTO {
 
     private Integer salary;
 
-    public EmployeeDTO() {}
+    public EmployeePostDTO() {}
 
     public String getName() {
         return name;

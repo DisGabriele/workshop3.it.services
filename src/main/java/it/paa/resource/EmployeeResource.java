@@ -1,7 +1,7 @@
 package it.paa.resource;
 
-import it.paa.model.dto.employee.EmployeeDTO;
-import it.paa.model.dto.employee.EmployeeUpdateDTO;
+import it.paa.model.dto.employee.EmployeePostDTO;
+import it.paa.model.dto.employee.EmployeePutDTO;
 import it.paa.model.entity.Customer;
 import it.paa.model.entity.Employee;
 import it.paa.model.entity.Role;
@@ -106,7 +106,7 @@ public class EmployeeResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(@Valid EmployeeDTO employeeDTO) {
+    public Response create(@Valid EmployeePostDTO employeeDTO) {
         LocalDate hiringDate = null;
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -168,7 +168,7 @@ public class EmployeeResource {
     @PUT
     @Path("/employee_id/{employee_id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("employee_id") Long employee_id, EmployeeUpdateDTO employeeDTO) {
+    public Response update(@PathParam("employee_id") Long employee_id, EmployeePutDTO employeeDTO) {
 
         if (employeeDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();

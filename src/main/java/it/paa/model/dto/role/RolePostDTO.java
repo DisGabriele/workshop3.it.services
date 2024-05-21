@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class RoleDTO {
+public class RolePostDTO {
     @NotBlank(message = "role name cannot be blank")
     private String name;
 
@@ -12,7 +12,7 @@ public class RoleDTO {
     @JsonProperty("min_salary")
     private Integer minSalary;
 
-    public RoleDTO(){}
+    public RolePostDTO(){}
 
     public String getName() {
         return name;

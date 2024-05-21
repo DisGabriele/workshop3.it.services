@@ -1,6 +1,6 @@
 package it.paa.resource;
 
-import it.paa.model.dto.role.RoleDTO;
+import it.paa.model.dto.role.RolePostDTO;
 import it.paa.model.dto.role.RoleUpdateDTO;
 import it.paa.model.entity.Employee;
 import it.paa.model.entity.Role;
@@ -75,7 +75,7 @@ public class RoleResource {
     }
 
     @POST
-    public Response create(@Valid RoleDTO roleDTO) {
+    public Response create(@Valid RolePostDTO roleDTO) {
         try {
             Role role = new Role();
             role.setName(roleDTO.getName());

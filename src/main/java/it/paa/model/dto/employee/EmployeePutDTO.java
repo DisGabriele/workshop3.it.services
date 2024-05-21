@@ -2,7 +2,7 @@ package it.paa.model.dto.employee;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class EmployeeUpdateDTO {
+public class EmployeePutDTO {
     private String name;
 
     private String surname;
@@ -15,7 +15,7 @@ public class EmployeeUpdateDTO {
 
     private Integer salary;
 
-    public EmployeeUpdateDTO() {
+    public EmployeePutDTO() {
     }
 
     public String getName() {
