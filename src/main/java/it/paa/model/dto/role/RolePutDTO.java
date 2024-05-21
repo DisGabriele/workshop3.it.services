@@ -1,10 +1,10 @@
 package it.paa.model.dto.role;
 
-public class RoleUpdateDTO {
+public class RolePutDTO {
     private String name;
     private Integer minSalary;
 
-    public RoleUpdateDTO() {}
+    public RolePutDTO() {}
 
     public String getName() {
         return name;
@@ -23,7 +23,7 @@ public class RoleUpdateDTO {
     }
 
     public boolean allEmpty() {
-        return (this.name == null || this.name.isEmpty() || this.name.isBlank()) &&
+        return (this.name == null) &&
                 (this.minSalary == null);
     }
 }

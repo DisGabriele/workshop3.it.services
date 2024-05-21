@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 
@@ -17,9 +19,11 @@ public class Role {
     private Long id;
 
     @Column(name = "name", nullable = false, unique = true)
+    @NotBlank(message = "role name cannot be empty")
     private String name;
 
     @Column(name = "minimum_salary")
+    @PositiveOrZero(message = "minimum salary cannot be negative")
     @JsonProperty("min_salary")
     private Integer minSalary;
 

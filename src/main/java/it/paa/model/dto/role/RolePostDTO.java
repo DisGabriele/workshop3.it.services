@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public class RolePostDTO {
-    @NotBlank(message = "role name cannot be blank")
+    @NotBlank(message = "role name cannot be empty")
     private String name;
 
     @PositiveOrZero(message = "minimum salary cannot be negative")

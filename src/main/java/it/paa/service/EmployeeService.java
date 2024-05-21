@@ -9,6 +9,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.NoContentException;
@@ -75,16 +76,28 @@ public class EmployeeService implements EmployeeRepository {
 
     @Override
     @Transactional
-    public Employee save(Employee employee) {
-        entityManager.persist(employee);
-        return employee;
+    public Employee save(Employee employee) throws ConstraintViolationException {
+        try {
+            entityManager.persist(employee);
+            entityManager.flush();
+
+            return employee;
+        } catch (ConstraintViolationException e) {
+            throw new ConstraintViolationException(e.getConstraintViolations());
+        }
     }
 
     @Override
     @Transactional
-    public Employee update(Employee employee) {
-        entityManager.merge(employee);
-        return employee;
+    public Employee update(Employee employee) throws ConstraintViolationException {
+        try {
+            entityManager.merge(employee);
+            entityManager.flush();
+
+            return employee;
+        } catch (ConstraintViolationException e) {
+            throw new ConstraintViolationException(e.getConstraintViolations());
+        }
     }
 
     @Override
@@ -92,7 +105,7 @@ public class EmployeeService implements EmployeeRepository {
     public void delete(Long id) throws NotFoundException, BadRequestException {
         Employee employee = getById(id);
 
-        if(!employee.getCustomerList().isEmpty())
+        if (!employee.getCustomerList().isEmpty())
             throw new BadRequestException("cannot delete role because has associated customers");
 
         entityManager.remove(employee);

@@ -1,7 +1,7 @@
 package it.paa.resource;
 
 import it.paa.model.dto.role.RolePostDTO;
-import it.paa.model.dto.role.RoleUpdateDTO;
+import it.paa.model.dto.role.RolePutDTO;
 import it.paa.model.entity.Employee;
 import it.paa.model.entity.Role;
 import it.paa.service.RoleService;
@@ -102,7 +102,7 @@ public class RoleResource {
     @PUT
     @Path("/role_id/{role_id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("role_id") Long id, RoleUpdateDTO roleDto) {
+    public Response update(@PathParam("role_id") Long id, RolePutDTO roleDto) {
 
         if (roleDto == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -114,7 +114,7 @@ public class RoleResource {
         try {
             Role old = roleService.getById(id);
             //metodo per vedere univocità del nome in ignore case per la PUT
-            if (roleDto.getName() != null && !roleDto.getName().isEmpty())
+            if (roleDto.getName() != null)
                 old.setName(roleDto.getName());
 
             if (roleDto.getMinSalary() != null)

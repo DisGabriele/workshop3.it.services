@@ -8,6 +8,7 @@ import it.paa.model.entity.Role;
 import it.paa.service.EmployeeService;
 import jakarta.inject.Inject;
 import jakarta.persistence.NoResultException;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -159,10 +160,18 @@ public class EmployeeResource {
         employee.setHiringDate(hiringDate);
         employee.setRole(role);
 
-        return Response.status(Response.Status.CREATED)
-                .type(MediaType.APPLICATION_JSON)
-                .entity(employeeService.save(employee))
-                .build();
+        try {
+            return Response.status(Response.Status.CREATED)
+                    .type(MediaType.APPLICATION_JSON)
+                    .entity(employeeService.save(employee))
+                    .build();
+        } catch (ConstraintViolationException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+
     }
 
     @PUT
@@ -178,13 +187,13 @@ public class EmployeeResource {
         try {
 
             Employee employee = employeeService.getById(employee_id);
-            if (employeeDTO.getName() != null && !employeeDTO.getName().isEmpty() && !employeeDTO.getName().isBlank())
+            if (employeeDTO.getName() != null)
                 employee.setName(employeeDTO.getName());
 
-            if (employeeDTO.getSurname() != null && !employeeDTO.getSurname().isEmpty() && !employeeDTO.getSurname().isBlank())
+            if (employeeDTO.getSurname() != null)
                 employee.setSurname(employeeDTO.getSurname());
 
-            if (employeeDTO.getHiringDate() != null && !employeeDTO.getHiringDate().isEmpty() && !employeeDTO.getHiringDate().isBlank()) {
+            if (employeeDTO.getHiringDate() != null) {
                 LocalDate hiringDate = null;
                 try {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -204,7 +213,12 @@ public class EmployeeResource {
                 }
             }
 
-            if (employeeDTO.getRoleName() != null && !employeeDTO.getRoleName().isEmpty() && !employeeDTO.getRoleName().isBlank()) {
+            if (employeeDTO.getRoleName() != null) {
+                if (employeeDTO.getRoleName().isEmpty() || employeeDTO.getRoleName().isBlank())
+                    return Response.status(Response.Status.BAD_REQUEST)
+                            .type(MediaType.TEXT_PLAIN)
+                            .entity("role cannot be empty")
+                            .build();
                 try {
                     Role role = employeeService.getRoleByName(employeeDTO.getRoleName());
                     employee.setRole(role);
@@ -226,7 +240,14 @@ public class EmployeeResource {
                     employee.setSalary(employeeDTO.getSalary());
             }
 
-            return Response.ok(employeeService.update(employee)).build();
+            try {
+                return Response.ok(employeeService.update(employee)).build();
+            } catch (ConstraintViolationException e) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .type(MediaType.TEXT_PLAIN)
+                        .entity(e.getMessage())
+                        .build();
+            }
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .type(MediaType.TEXT_PLAIN)
@@ -238,7 +259,7 @@ public class EmployeeResource {
     @DELETE
     @Path("/employee_id/{employee_id}")
     public Response delete(@PathParam("employee_id") Long employee_id) {
-        try{
+        try {
             employeeService.delete(employee_id);
             return Response.ok().build();
         } catch (NotFoundException e) {
