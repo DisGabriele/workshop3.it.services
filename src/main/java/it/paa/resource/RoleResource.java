@@ -38,8 +38,8 @@ public class RoleResource {
     }
 
     @GET
-    @Path("/role_id/{id}")
-    public Response getById(@PathParam("id") Long id) {
+    @Path("/role_id/{role_id}")
+    public Response getById(@PathParam("role_id") Long id) {
         try {
             Role role = roleService.getById(id);
             return Response.ok(role)
@@ -54,8 +54,8 @@ public class RoleResource {
     }
 
     @GET
-    @Path("/role_id/{id}/employees")
-    public Response getEmployees(@PathParam("id") Long id) {
+    @Path("/role_id/{role_id}/employees")
+    public Response getEmployees(@PathParam("role_id") Long id) {
         try {
             Role role = roleService.getById(id);
 
@@ -76,6 +76,10 @@ public class RoleResource {
 
     @POST
     public Response create(@Valid RolePostDTO roleDTO) {
+        if (roleDTO == null)
+            return Response.status(Response.Status.BAD_REQUEST).build();
+
+
         try {
             Role role = new Role();
             role.setName(roleDTO.getName());
@@ -102,23 +106,23 @@ public class RoleResource {
     @PUT
     @Path("/role_id/{role_id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("role_id") Long id, RolePutDTO roleDto) {
+    public Response update(@PathParam("role_id") Long id, RolePutDTO roleDTO) {
 
-        if (roleDto == null)
+        if (roleDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
-        if (roleDto.allEmpty())
+        if (roleDTO.isAllEmpty())
             return Response.status(Response.Status.NOT_MODIFIED).build();
 
 
         try {
             Role old = roleService.getById(id);
             //metodo per vedere univocità del nome in ignore case per la PUT
-            if (roleDto.getName() != null)
-                old.setName(roleDto.getName());
+            if (roleDTO.getName() != null)
+                old.setName(roleDTO.getName());
 
-            if (roleDto.getMinSalary() != null)
-                old.setMinSalary(roleDto.getMinSalary());
+            if (roleDTO.getMinSalary() != null)
+                old.setMinSalary(roleDTO.getMinSalary());
 
             try {
                 return Response.ok(roleService.update(old)).build();

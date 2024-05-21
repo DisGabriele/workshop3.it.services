@@ -1,5 +1,6 @@
 package it.paa.model.dto.employee;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EmployeePutDTO {
@@ -58,7 +59,8 @@ public class EmployeePutDTO {
         this.salary = salary;
     }
 
-    public boolean allEmpty() {
+    @JsonIgnore
+    public boolean isAllEmpty() {
         return this.name == null &&
                 this.surname == null &&
                 this.hiringDate == null &&

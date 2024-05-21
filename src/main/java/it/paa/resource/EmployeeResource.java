@@ -84,6 +84,22 @@ public class EmployeeResource {
     }
 
     @GET
+    @Path("/employee_id/{employee_id}")
+    public Response getById(@PathParam("employee_id") Long employeeId) {
+        try {
+            Employee employee = employeeService.getById(employeeId);
+            return Response.ok(employee)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @GET
     @Path("/employee_id/{employee_id}/clients")
     public Response getEmployeeClients(@PathParam("employee_id") Long employeeId) {
         try {
@@ -108,6 +124,9 @@ public class EmployeeResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(@Valid EmployeePostDTO employeeDTO) {
+        if (employeeDTO == null)
+            return Response.status(Response.Status.BAD_REQUEST).build();
+
         LocalDate hiringDate = null;
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -182,7 +201,7 @@ public class EmployeeResource {
         if (employeeDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
-        if (employeeDTO.allEmpty())
+        if (employeeDTO.isAllEmpty())
             return Response.status(Response.Status.NOT_MODIFIED).build();
         try {
 

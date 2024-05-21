@@ -1,5 +1,7 @@
 package it.paa.model.dto.role;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class RolePutDTO {
     private String name;
     private Integer minSalary;
@@ -22,7 +24,8 @@ public class RolePutDTO {
         this.minSalary = minSalary;
     }
 
-    public boolean allEmpty() {
+    @JsonIgnore
+    public boolean isAllEmpty() {
         return this.name == null &&
                 this.minSalary == null;
     }
