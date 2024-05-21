@@ -59,10 +59,10 @@ public class EmployeePutDTO {
     }
 
     public boolean allEmpty() {
-        return (this.name == null) &&
-                (this.surname == null) &&
-                (this.hiringDate == null) &&
-                (this.roleName == null) &&
-                (this.salary == null);
+        return this.name == null &&
+                this.surname == null &&
+                this.hiringDate == null &&
+                this.roleName == null &&
+                this.salary == null;
     }
 }

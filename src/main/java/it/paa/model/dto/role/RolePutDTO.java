@@ -23,7 +23,7 @@ public class RolePutDTO {
     }
 
     public boolean allEmpty() {
-        return (this.name == null) &&
-                (this.minSalary == null);
+        return this.name == null &&
+                this.minSalary == null;
     }
 }
