@@ -1,11 +1,14 @@
 package it.paa.model.dto.customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CustomerPutDTO {
     private String name;
     private String sector;
     private String address;
+
+    @JsonProperty("customer_id")
     private Long employeeId;
 
     public CustomerPutDTO() {

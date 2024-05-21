@@ -6,6 +6,7 @@ import it.paa.model.entity.Customer;
 import it.paa.model.entity.Employee;
 import it.paa.model.entity.Role;
 import it.paa.service.EmployeeService;
+import it.paa.util.DateStringParser;
 import jakarta.inject.Inject;
 import jakarta.persistence.NoResultException;
 import jakarta.validation.ConstraintViolationException;
@@ -34,37 +35,23 @@ public class EmployeeResource {
 
             if (startDateString != null) {
                 try {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    startDate = LocalDate.parse(startDateString, formatter);
-                } catch (DateTimeParseException e) {
-                    try {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                        startDate = LocalDate.parse(startDateString, formatter);
-
-                    } catch (DateTimeParseException ex) {
-                        return Response.status(Response.Status.BAD_REQUEST)
-                                .type(MediaType.TEXT_PLAIN)
-                                .entity("start_date: Invalid date format")
-                                .build();
-                    }
+                    startDate = DateStringParser.parse(startDateString);
+                } catch (Exception e) {
+                    return Response.status(Response.Status.BAD_REQUEST)
+                            .type(MediaType.TEXT_PLAIN)
+                            .entity("start date: " + e.getMessage())
+                            .build();
                 }
             }
 
-            //check per fare in modo che la data può essere messa in entrambi i modi
             if (endDateString != null) {
                 try {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    endDate = LocalDate.parse(endDateString, formatter);
-                } catch (DateTimeParseException e) {
-                    try {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                        endDate = LocalDate.parse(endDateString, formatter);
-                    } catch (DateTimeParseException ex) {
-                        return Response.status(Response.Status.BAD_REQUEST)
-                                .type(MediaType.TEXT_PLAIN)
-                                .entity("end_date: Invalid date format")
-                                .build();
-                    }
+                    startDate = DateStringParser.parse(endDateString);
+                } catch (Exception e) {
+                    return Response.status(Response.Status.BAD_REQUEST)
+                            .type(MediaType.TEXT_PLAIN)
+                            .entity("end date: " + e.getMessage())
+                            .build();
                 }
             }
 
@@ -101,7 +88,7 @@ public class EmployeeResource {
 
     @GET
     @Path("/employee_id/{employee_id}/clients")
-    public Response getEmployeeClients(@PathParam("employee_id") Long employeeId) {
+    public Response getClients(@PathParam("employee_id") Long employeeId) {
         try {
             Employee employee = employeeService.getById(employeeId);
 
@@ -128,18 +115,14 @@ public class EmployeeResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
 
         LocalDate hiringDate = null;
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            hiringDate = LocalDate.parse(employeeDTO.getHiringDate(), formatter);
-        } catch (DateTimeParseException e) {
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                hiringDate = LocalDate.parse(employeeDTO.getHiringDate(), formatter);
 
-            } catch (DateTimeParseException ex) {
+        if (employeeDTO.getHiringDate() != null) {
+            try {
+                hiringDate = DateStringParser.parse(employeeDTO.getHiringDate());
+            } catch (Exception e) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .type(MediaType.TEXT_PLAIN)
-                        .entity("hiring_date: Invalid date format")
+                        .entity("hiring date: " + e.getMessage())
                         .build();
             }
         }
@@ -171,7 +154,6 @@ public class EmployeeResource {
                         .build();
             } else
                 employee.setSalary(employeeDTO.getSalary());
-
         }
 
         employee.setName(employeeDTO.getName());

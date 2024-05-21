@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.NoContentException;
 import java.util.List;
 
 public interface CustomerRepository {
-    List<Customer> getAll(String name, String sector) throws NoContentException,IllegalArgumentException;
+    List<Customer> getAll(String name, String sector) throws NoContentException;
     Customer getById(Long id) throws NotFoundException;
     Customer save(Customer customer) throws ConstraintViolationException;
     Customer update(Customer customer) throws ConstraintViolationException;

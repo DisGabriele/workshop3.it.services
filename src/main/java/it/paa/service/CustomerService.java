@@ -21,7 +21,7 @@ public class CustomerService implements CustomerRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Customer> getAll(String name, String sector) throws NoContentException, IllegalArgumentException {
+    public List<Customer> getAll(String name, String sector) throws NoContentException {
         String query = "SELECT c FROM Customer c";
 
         if(name!=null && !name.isEmpty() && !name.isBlank())
