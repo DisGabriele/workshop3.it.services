@@ -1,10 +1,13 @@
 package it.paa.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "employees")
@@ -21,7 +24,7 @@ public class Employee {
     @Column(name = "surname", nullable = false)
     private String surname;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "role", referencedColumnName = "id")
     @JsonManagedReference
     private Role role;
@@ -32,6 +35,11 @@ public class Employee {
 
     @Column(name = "salary")
     private Integer salary;
+
+    @OneToMany(mappedBy = "employee")
+    @JsonBackReference
+    @JsonIgnore
+    private List<Customer> customerList;
 
     public Employee(){}
 
@@ -81,5 +89,13 @@ public class Employee {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Customer> getCustomerList() {
+        return customerList;
+    }
+
+    public void setCustomerList(List<Customer> customerList) {
+        this.customerList = customerList;
     }
 }

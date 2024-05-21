@@ -2,6 +2,7 @@ package it.paa.resource;
 
 import it.paa.model.dto.employee.EmployeeDTO;
 import it.paa.model.dto.employee.EmployeeUpdateDTO;
+import it.paa.model.entity.Customer;
 import it.paa.model.entity.Employee;
 import it.paa.model.entity.Role;
 import it.paa.service.EmployeeService;
@@ -81,6 +82,28 @@ public class EmployeeResource {
         }
     }
 
+    @GET
+    @Path("/employee_id/{employee_id}/clients")
+    public Response getEmployeeClients(@PathParam("employee_id") Long employeeId) {
+        try {
+            Employee employee = employeeService.getById(employeeId);
+
+            List<Customer> customerList = employee.getCustomerList();
+
+            if (customerList.isEmpty())
+                return Response.status(Response.Status.NO_CONTENT)
+                        .type(MediaType.TEXT_PLAIN)
+                        .build();
+
+            return Response.ok(customerList).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(@Valid EmployeeDTO employeeDTO) {
@@ -147,7 +170,7 @@ public class EmployeeResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("employee_id") Long employee_id, EmployeeUpdateDTO employeeDTO) {
 
-        if(employeeDTO == null)
+        if (employeeDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
         if (employeeDTO.allEmpty())
@@ -199,14 +222,31 @@ public class EmployeeResource {
                             .type(MediaType.TEXT_PLAIN)
                             .entity("employees's salary cannot be lower than role role's minimum salary")
                             .build();
-                }
-                else
+                } else
                     employee.setSalary(employeeDTO.getSalary());
             }
 
             return Response.ok(employeeService.update(employee)).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @DELETE
+    @Path("/employee_id/{employee_id}")
+    public Response delete(@PathParam("employee_id") Long employee_id) {
+        try{
+            employeeService.delete(employee_id);
+            return Response.ok().build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
                     .type(MediaType.TEXT_PLAIN)
                     .entity(e.getMessage())
                     .build();

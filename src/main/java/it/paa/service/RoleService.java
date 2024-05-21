@@ -9,6 +9,7 @@ import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.NoContentException;
 
@@ -114,8 +115,12 @@ public class RoleService implements RoleRepository {
 
     @Override
     @Transactional
-    public void delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotFoundException, BadRequestException{
         Role role = getById(id);
+
+        if(!role.getEmployeeList().isEmpty())
+            throw new BadRequestException("cannot delete role because has associated employees");
+
         entityManager.remove(role);
     }
 }

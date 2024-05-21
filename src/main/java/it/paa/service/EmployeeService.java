@@ -9,6 +9,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.NoContentException;
 
@@ -88,8 +89,12 @@ public class EmployeeService implements EmployeeRepository {
 
     @Override
     @Transactional
-    public void delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotFoundException, BadRequestException {
         Employee employee = getById(id);
+
+        if(!employee.getCustomerList().isEmpty())
+            throw new BadRequestException("cannot delete role because has associated customers");
+
         entityManager.remove(employee);
     }
 
