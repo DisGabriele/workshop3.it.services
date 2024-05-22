@@ -28,7 +28,6 @@ public class CustomerResource {
             return Response.ok(customerList).build();
         } catch (NoContentException e) {
             return Response.noContent()
-                    .type(MediaType.TEXT_PLAIN)
                     .build();
         }
     }
