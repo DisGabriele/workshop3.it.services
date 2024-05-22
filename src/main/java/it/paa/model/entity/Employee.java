@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +34,11 @@ public class Employee {
     @JoinColumn(name = "role", referencedColumnName = "id", nullable = false)
     @JsonManagedReference
     private Role role;
+
+    @Column(name = "experience_level")
+    @PositiveOrZero(message = "experience level cannot be negative")
+    @JsonProperty("experience_level")
+    private Integer experienceLevel;
 
     @Column(name = "hiring_date", nullable = false)
     @JsonProperty("hiring_date")
@@ -99,6 +105,14 @@ public class Employee {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Integer getExperienceLevel() {
+        return experienceLevel;
+    }
+
+    public void setExperienceLevel(Integer experienceLevel) {
+        this.experienceLevel = experienceLevel;
     }
 
     public List<Customer> getCustomerList() {

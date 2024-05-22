@@ -14,7 +14,6 @@ import java.util.Set;
 @Table(name = "projects")
 @ProjectDates
 public class Project {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

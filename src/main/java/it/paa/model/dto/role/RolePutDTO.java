@@ -1,9 +1,11 @@
 package it.paa.model.dto.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RolePutDTO {
     private String name;
+    @JsonProperty("min_salary")
     private Integer minSalary;
 
     public RolePutDTO() {}

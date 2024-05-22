@@ -164,6 +164,11 @@ public class EmployeeResource {
 
         Employee employee = new Employee();
 
+        if(employeeDTO.getExperienceLevel() == null)
+            employee.setExperienceLevel(0);
+        else
+            employee.setExperienceLevel(employeeDTO.getExperienceLevel());
+
         if (role.getMinSalary() == null || role.getMinSalary().equals(0)) {
             if (employeeDTO.getSalary() == null || employeeDTO.getSalary().equals(0))
                 employee.setSalary(0);
@@ -255,6 +260,9 @@ public class EmployeeResource {
                             .build();
                 }
             }
+
+            if(employeeDTO.getExperienceLevel() != null)
+                old.setExperienceLevel(employeeDTO.getExperienceLevel());
 
             if (employeeDTO.getSalary() != null) {
                 if (employeeDTO.getSalary() < old.getRole().getMinSalary()) {
