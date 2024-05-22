@@ -22,3 +22,9 @@ insert into projects (id, name, description, start_date, end_date) values
 (2,'name2','description2','02-02-2002','12-02-2002'),
 (3,'name3','description3','03-03-2003','13-03-2003');
 alter sequence projects_seq restart with 4;
+
+insert into technologies (id, name, description, minimum_experience_level) values
+(1,'name1','description1',1),
+(2,'name2','description2',2),
+(3,'name3','description3',3);
+alter sequence public.technologies_seq restart with 4;

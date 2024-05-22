@@ -2,6 +2,7 @@ package it.paa.service;
 
 import it.paa.model.entity.Employee;
 import it.paa.model.entity.Role;
+import it.paa.model.entity.Technology;
 import it.paa.repository.EmployeeRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -103,16 +104,19 @@ public class EmployeeService implements EmployeeRepository {
     @Override
     @Transactional
     public void delete(Long id) throws NotFoundException, BadRequestException {
+        try{
+
         Employee employee = getById(id);
 
         if (!employee.getCustomerList().isEmpty())
             throw new BadRequestException("cannot delete employee because has associated customers");
 
-        if (!employee.getProjectList().isEmpty())
-            throw new BadRequestException("cannot delete employee because has associated projects");
-
         entityManager.remove(employee);
+        } catch (org.hibernate.exception.ConstraintViolationException e){
+            throw new BadRequestException("cannot delete employee because has associated projects");
+        }
     }
+
 
     public Role getRoleByName(String roleName) throws NoResultException {
         try {
@@ -122,5 +126,43 @@ public class EmployeeService implements EmployeeRepository {
         } catch (NoResultException e) {
             throw new NoResultException("role not found");
         }
+    }
+
+    @Override
+    @Transactional
+    public void addTechnology(Long employeeId, Long technologyId) throws NotFoundException,IllegalArgumentException {
+        Employee employee = getById(employeeId);
+        Technology technology = getTechnologyById(technologyId);
+
+        if(employee.getExperienceLevel() < technology.getMinExperienceLevel())
+            throw new IllegalArgumentException("employee experience level does not meet technology level required");
+
+        if(employee.getTechnologiesList().contains(technology))
+            throw new IllegalArgumentException("employee already has this technology");
+
+        employee.addTechnology(technology);
+        entityManager.merge(employee);
+    }
+
+    @Override
+    @Transactional
+    public void removeTechnology(Long employeeId, Long technologyId) throws NotFoundException, IllegalArgumentException {
+        Employee employee = getById(employeeId);
+        Technology technology = getTechnologyById(technologyId);
+
+        if(!employee.getTechnologiesList().contains(technology))
+            throw new IllegalArgumentException("employee does not have this technology");
+
+        employee.removeTechnology(technology);
+        entityManager.merge(employee);
+    }
+
+    public Technology getTechnologyById(Long technologyId) throws NotFoundException {
+        Technology technology = entityManager.find(Technology.class, technologyId);
+
+        if (technology == null)
+            throw new NotFoundException("technology not found");
+
+        return technology;
     }
 }

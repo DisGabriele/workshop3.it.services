@@ -2,6 +2,7 @@ package it.paa.repository;
 
 import it.paa.model.entity.Employee;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.NoContentException;
 
@@ -13,5 +14,7 @@ public interface EmployeeRepository {
     Employee getById(Long id) throws NotFoundException;
     Employee save(Employee employee) throws ConstraintViolationException;
     Employee update(Employee employee) throws ConstraintViolationException;
-    void delete(Long id) throws NotFoundException;
+    void delete(Long id) throws NotFoundException, BadRequestException;
+    void addTechnology(Long employeeId, Long technologyId) throws NotFoundException, IllegalArgumentException;
+    void removeTechnology(Long employeeId, Long technologyId) throws NotFoundException, IllegalArgumentException;
 }

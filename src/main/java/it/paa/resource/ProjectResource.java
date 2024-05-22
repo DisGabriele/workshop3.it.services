@@ -61,7 +61,6 @@ public class ProjectResource {
                     .build();
         } catch (NoContentException e) {
             return Response.noContent()
-                    .type(MediaType.TEXT_PLAIN)
                     .build();
         }
     }
@@ -96,7 +95,6 @@ public class ProjectResource {
 
         if(employeeList.isEmpty()){
             return Response.noContent()
-                    .type(MediaType.TEXT_PLAIN)
                     .build();
         }
 

@@ -72,6 +72,7 @@ public class EmployeePutDTO {
                 this.surname == null &&
                 this.hiringDate == null &&
                 this.roleName == null &&
+                this.experienceLevel == null &&
                 this.salary == null;
     }
 }

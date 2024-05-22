@@ -115,7 +115,7 @@ public class ProjectService implements ProjectRepository {
         Employee employee = getEmployeeById(employeeId);
 
         if(project.getEmployeesList().contains(employee))
-            throw new IllegalArgumentException("project already have this employee");
+            throw new IllegalArgumentException("project already has this employee");
 
         project.addEmployee(employee);
         entityManager.merge(project);

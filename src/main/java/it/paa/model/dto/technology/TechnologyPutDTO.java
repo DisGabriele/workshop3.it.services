@@ -1,20 +1,16 @@
-package it.paa.model.dto.project;
+package it.paa.model.dto.technology;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ProjectPutDTO {
+public class TechnologyPutDTO {
     private String name;
-
     private String description;
 
-    @JsonProperty("start_date")
-    private String startDate;
+    @JsonProperty("minimum_experience_level")
+    private Integer minExperienceLevel;
 
-    @JsonProperty("end_date")
-    private String endDate;
-
-    public ProjectPutDTO() {}
+    public TechnologyPutDTO() {}
 
     public String getName() {
         return name;
@@ -32,27 +28,18 @@ public class ProjectPutDTO {
         this.description = description;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public Integer getMinExperienceLevel() {
+        return minExperienceLevel;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setMinExperienceLevel(Integer minExperienceLevel) {
+        this.minExperienceLevel = minExperienceLevel;
     }
 
     @JsonIgnore
     public boolean isAllEmpty() {
         return name == null &&
                 description == null &&
-                startDate == null &&
-                endDate == null;
+                minExperienceLevel == null;
     }
 }

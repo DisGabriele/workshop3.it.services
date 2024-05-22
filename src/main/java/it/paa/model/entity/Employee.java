@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +58,18 @@ public class Employee {
     @JsonIgnore
     private Set<Project> projectList;
 
-    public Employee(){}
+
+    @ManyToMany
+    @JoinTable(
+            name = "technology_employee",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "technology_id")
+    )
+    @JsonIgnore
+    private Set<Technology> technologiesList;
+
+    public Employee() {
+    }
 
     public Long getId() {
         return id;
@@ -129,5 +141,27 @@ public class Employee {
 
     public void setProjectList(Set<Project> projectList) {
         this.projectList = projectList;
+    }
+
+    public Set<Technology> getTechnologiesList() {
+        return technologiesList;
+    }
+
+    public void setTechnologiesList(Set<Technology> technologiesList) {
+        this.technologiesList = technologiesList;
+    }
+
+    public void addTechnology(Technology technology) {
+        if (technologiesList == null) {
+            technologiesList = new HashSet<>();
+        }
+        technologiesList.add(technology);
+    }
+
+    public void removeTechnology(Technology technology) {
+        if (technologiesList == null) {
+            technologiesList = new HashSet<>();
+        }
+        technologiesList.remove(technology);
     }
 }

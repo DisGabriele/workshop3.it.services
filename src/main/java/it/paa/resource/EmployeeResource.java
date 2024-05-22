@@ -2,10 +2,7 @@ package it.paa.resource;
 
 import it.paa.model.dto.employee.EmployeePostDTO;
 import it.paa.model.dto.employee.EmployeePutDTO;
-import it.paa.model.entity.Customer;
-import it.paa.model.entity.Employee;
-import it.paa.model.entity.Project;
-import it.paa.model.entity.Role;
+import it.paa.model.entity.*;
 import it.paa.service.EmployeeService;
 import it.paa.util.DateStringParser;
 import jakarta.inject.Inject;
@@ -66,7 +63,6 @@ public class EmployeeResource {
                     .build();
         } catch (NoContentException e) {
             return Response.noContent()
-                    .type(MediaType.TEXT_PLAIN)
                     .build();
         }
     }
@@ -97,8 +93,6 @@ public class EmployeeResource {
 
             if (customerList.isEmpty())
                 return Response.status(Response.Status.NO_CONTENT)
-                        .type(MediaType.TEXT_PLAIN)
-                        .entity("no customers found for this employee")
                         .build();
 
             return Response.ok(customerList).build();
@@ -120,11 +114,30 @@ public class EmployeeResource {
 
             if (projectList.isEmpty())
                 return Response.status(Response.Status.NO_CONTENT)
-                        .type(MediaType.TEXT_PLAIN)
-                        .entity("no projects found for this employee")
                         .build();
 
             return Response.ok(projectList).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/employee_id/{employee_id}/technologies")
+    public Response getTechnologies(@PathParam("employee_id") Long employeeId) {
+        try {
+            Employee employee = employeeService.getById(employeeId);
+
+            Set<Technology> technologiesList = employee.getTechnologiesList();
+
+            if (technologiesList.isEmpty())
+                return Response.status(Response.Status.NO_CONTENT)
+                        .build();
+
+            return Response.ok(technologiesList).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .type(MediaType.TEXT_PLAIN)
@@ -284,6 +297,44 @@ public class EmployeeResource {
             }
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @PUT
+    @Path("/employee_id/{employee_id}/add_technology/{technology_id}")
+    public Response addTechnology(@PathParam("employee_id") Long employeeId, @PathParam("technology_id") Long technologyId) {
+        try {
+            employeeService.addTechnology(employeeId, technologyId);
+            return Response.ok().build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @PUT
+    @Path("/employee_id/{employee_id}/remove_technology/{technology_id}")
+    public Response removeTechnology(@PathParam("employee_id") Long employeeId, @PathParam("technology_id") Long technologyId) {
+        try {
+            employeeService.removeTechnology(employeeId, technologyId);
+            return Response.ok().build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
                     .type(MediaType.TEXT_PLAIN)
                     .entity(e.getMessage())
                     .build();
