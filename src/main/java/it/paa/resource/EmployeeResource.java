@@ -4,6 +4,7 @@ import it.paa.model.dto.employee.EmployeePostDTO;
 import it.paa.model.dto.employee.EmployeePutDTO;
 import it.paa.model.entity.Customer;
 import it.paa.model.entity.Employee;
+import it.paa.model.entity.Project;
 import it.paa.model.entity.Role;
 import it.paa.service.EmployeeService;
 import it.paa.util.DateStringParser;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Set;
 
 @Path("/employees")
 public class EmployeeResource {
@@ -65,7 +67,6 @@ public class EmployeeResource {
         } catch (NoContentException e) {
             return Response.noContent()
                     .type(MediaType.TEXT_PLAIN)
-                    .entity(e.getMessage())
                     .build();
         }
     }
@@ -87,8 +88,8 @@ public class EmployeeResource {
     }
 
     @GET
-    @Path("/employee_id/{employee_id}/clients")
-    public Response getClients(@PathParam("employee_id") Long employeeId) {
+    @Path("/employee_id/{employee_id}/customers")
+    public Response getCustomers(@PathParam("employee_id") Long employeeId) {
         try {
             Employee employee = employeeService.getById(employeeId);
 
@@ -97,9 +98,33 @@ public class EmployeeResource {
             if (customerList.isEmpty())
                 return Response.status(Response.Status.NO_CONTENT)
                         .type(MediaType.TEXT_PLAIN)
+                        .entity("no customers found for this employee")
                         .build();
 
             return Response.ok(customerList).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/employee_id/{employee_id}/projects")
+    public Response getProjects(@PathParam("employee_id") Long employeeId) {
+        try {
+            Employee employee = employeeService.getById(employeeId);
+
+            Set<Project> projectList = employee.getProjectList();
+
+            if (projectList.isEmpty())
+                return Response.status(Response.Status.NO_CONTENT)
+                        .type(MediaType.TEXT_PLAIN)
+                        .entity("no projects found for this employee")
+                        .build();
+
+            return Response.ok(projectList).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .type(MediaType.TEXT_PLAIN)

@@ -108,6 +108,32 @@ public class ProjectService implements ProjectRepository {
         entityManager.remove(project);
     }
 
+    @Override
+    @Transactional
+    public void addEmployee(Long projectId, Long employeeId) throws NotFoundException,IllegalArgumentException {
+        Project project = getById(projectId);
+        Employee employee = getEmployeeById(employeeId);
+
+        if(project.getEmployeesList().contains(employee))
+            throw new IllegalArgumentException("project already have this employee");
+
+        project.addEmployee(employee);
+        entityManager.merge(project);
+    }
+
+    @Override
+    @Transactional
+    public void removeEmployee(Long projectId, Long employeeId) throws NotFoundException, IllegalArgumentException {
+        Project project = getById(projectId);
+        Employee employee = getEmployeeById(employeeId);
+
+        if(!project.getEmployeesList().contains(employee))
+            throw new IllegalArgumentException("project does not have this employee");
+
+        project.removeEmployee(employee);
+        entityManager.merge(project);
+    }
+
     public Employee getEmployeeById(Long id) throws NotFoundException {
         Employee employee = entityManager.find(Employee.class, id);
 

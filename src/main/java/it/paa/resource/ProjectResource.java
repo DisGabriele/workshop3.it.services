@@ -2,6 +2,7 @@ package it.paa.resource;
 
 import it.paa.model.dto.project.ProjectPostDTO;
 import it.paa.model.dto.project.ProjectPutDTO;
+import it.paa.model.entity.Employee;
 import it.paa.model.entity.Project;
 import it.paa.service.ProjectService;
 import it.paa.util.DateStringParser;
@@ -15,6 +16,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Path("/projects")
 public class ProjectResource {
@@ -60,7 +62,6 @@ public class ProjectResource {
         } catch (NoContentException e) {
             return Response.noContent()
                     .type(MediaType.TEXT_PLAIN)
-                    .entity(e.getMessage())
                     .build();
         }
     }
@@ -77,6 +78,29 @@ public class ProjectResource {
                     .entity(e.getMessage())
                     .build();
         }
+    }
+
+    @GET
+    @Path("/project_id/{project_id}/employees")
+    public Response getEmployees(@PathParam("project_id") Long projectId) {
+        Project project;
+        try{
+            project = projectService.getById(projectId);
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+        Set<Employee> employeeList = project.getEmployeesList();
+
+        if(employeeList.isEmpty()){
+            return Response.noContent()
+                    .type(MediaType.TEXT_PLAIN)
+                    .build();
+        }
+
+        return Response.ok(employeeList).build();
     }
 
     @POST
@@ -191,10 +215,48 @@ public class ProjectResource {
         }
     }
 
+    @PUT
+    @Path("/project_id/{project_id}/add_eployee/{employee_id}")
+    public Response addEmployee(@PathParam("project_id") Long projectId, @PathParam("employee_id") Long employeeId) {
+        try {
+            projectService.addEmployee(projectId, employeeId);
+            return Response.ok().build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @PUT
+    @Path("/project_id/{project_id}/remove_eployee/{employee_id}")
+    public Response removeEmployee(@PathParam("project_id") Long projectId, @PathParam("employee_id") Long employeeId) {
+        try {
+            projectService.removeEmployee(projectId, employeeId);
+            return Response.ok().build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
     @DELETE
     @Path("/project_id/{project_id}")
     public Response delete(@PathParam("project_id") Long projectId) {
-        try{
+        try {
             projectService.delete(projectId);
             return Response.ok().build();
         } catch (NotFoundException e) {

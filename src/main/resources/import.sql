@@ -11,8 +11,14 @@ insert into employees (id,name,surname,hiring_date,role,salary) values
 (3, 'name3', 'surname3','03-03-2003',3,20);
 alter sequence employees_seq restart with 4;
 
-insert into customers (id, name, sector, address, contact_person) values
-(1, 'name1', 'sector1','address1',1),
-(2, 'name2', 'sector2','address2',2),
-(3, 'name3', 'sector3','address3',3);
+insert into customers (id, name, sector, address) values
+(1, 'name1', 'sector1','address1'),
+(2, 'name2', 'sector2','address2'),
+(3, 'name3', 'sector3','address3');
 alter sequence customers_seq restart with 4;
+
+insert into projects (id, name, description, start_date, end_date) values
+(1,'name1','description1','01-01-2001','11-01-2001'),
+(2,'name2','description2','02-02-2002','12-02-2002'),
+(3,'name3','description3','03-03-2003','13-03-2003');
+alter sequence projects_seq restart with 4;

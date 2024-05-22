@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -45,6 +46,10 @@ public class Employee {
     @JsonBackReference
     @JsonIgnore
     private List<Customer> customerList;
+
+    @ManyToMany(mappedBy = "employeesList")
+    @JsonIgnore
+    private Set<Project> projectList;
 
     public Employee(){}
 
@@ -102,5 +107,13 @@ public class Employee {
 
     public void setCustomerList(List<Customer> customerList) {
         this.customerList = customerList;
+    }
+
+    public Set<Project> getProjectList() {
+        return projectList;
+    }
+
+    public void setProjectList(Set<Project> projectList) {
+        this.projectList = projectList;
     }
 }

@@ -106,14 +106,16 @@ public class EmployeeService implements EmployeeRepository {
         Employee employee = getById(id);
 
         if (!employee.getCustomerList().isEmpty())
-            throw new BadRequestException("cannot delete role because has associated customers");
+            throw new BadRequestException("cannot delete employee because has associated customers");
+
+        if (!employee.getProjectList().isEmpty())
+            throw new BadRequestException("cannot delete employee because has associated projects");
 
         entityManager.remove(employee);
     }
 
     public Role getRoleByName(String roleName) throws NoResultException {
         try {
-
             return entityManager.createQuery("SELECT r FROM Role r WHERE LOWER(r.name) = LOWER(:name)", Role.class)
                     .setParameter("name", roleName)
                     .getSingleResult();

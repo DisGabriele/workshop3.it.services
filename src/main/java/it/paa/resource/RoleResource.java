@@ -32,7 +32,6 @@ public class RoleResource {
         } catch (NoContentException e) {
             return Response.noContent()
                     .type(MediaType.TEXT_PLAIN)
-                    .entity(e.getMessage())
                     .build();
         }
     }

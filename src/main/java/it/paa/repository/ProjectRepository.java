@@ -14,4 +14,6 @@ public interface ProjectRepository {
     Project save(Project project) throws ConstraintViolationException;
     Project update(Project project) throws ConstraintViolationException;
     void delete(Long id) throws NotFoundException;
+    void addEmployee(Long projectId, Long employeeId) throws NotFoundException, IllegalArgumentException;
+    void removeEmployee(Long projectId, Long employeeId) throws NotFoundException, IllegalArgumentException;
 }

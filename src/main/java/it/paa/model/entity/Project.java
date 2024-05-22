@@ -1,11 +1,14 @@
 package it.paa.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.paa.validation.ProjectDates;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "projects")
@@ -32,7 +35,14 @@ public class Project {
     @JsonProperty("end_date")
     private LocalDate endDate;
 
-    //ManyToMany Employee
+    @ManyToMany
+    @JoinTable(
+            name = "employee_project",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
+    @JsonIgnore
+    private Set<Employee> employeesList;
 
     public Project() {}
 
@@ -75,4 +85,27 @@ public class Project {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
+
+    public Set<Employee> getEmployeesList() {
+        return employeesList;
+    }
+
+    public void setEmployeesList(Set<Employee> employeesList) {
+        this.employeesList = employeesList;
+    }
+
+    public void addEmployee(Employee employee) {
+        if (employeesList == null) {
+            employeesList = new HashSet<>();
+        }
+            employeesList.add(employee);
+    }
+
+    public void removeEmployee(Employee employee) {
+        if (employeesList == null) {
+            employeesList = new HashSet<>();
+        }
+        employeesList.remove(employee);
+    }
+
 }
