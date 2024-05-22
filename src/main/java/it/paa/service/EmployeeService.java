@@ -112,6 +112,7 @@ public class EmployeeService implements EmployeeRepository {
             throw new BadRequestException("cannot delete employee because has associated customers");
 
         entityManager.remove(employee);
+        entityManager.flush();
         } catch (org.hibernate.exception.ConstraintViolationException e){
             throw new BadRequestException("cannot delete employee because has associated projects");
         }

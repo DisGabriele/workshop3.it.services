@@ -25,13 +25,13 @@ public class CustomerService implements CustomerRepository {
         String query = "SELECT c FROM Customer c";
 
         if(name!=null && !name.isEmpty() && !name.isBlank())
-            query += " WHERE c.name LIKE :name";
+            query += " WHERE LOWER(c.name) = LOWER(:name)";
 
         if(sector!=null && !sector.isEmpty() && !sector.isBlank()){
             if(!query.contains("WHERE"))
-                query += " WHERE c.sector LIKE :sector";
+                query += " WHERE LOWER(c.sector) = LOWER(:sector)";
             else
-                query += " AND c.sector LIKE :sector";
+                query += " AND LOWER(c.sector) = LOWER(:sector)";
         }
 
         TypedQuery<Customer> tQuery = entityManager.createQuery(query, Customer.class);
