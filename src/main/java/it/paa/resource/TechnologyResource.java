@@ -1,6 +1,7 @@
 package it.paa.resource;
 
 import it.paa.model.dto.technology.TechnologyPostDTO;
+import it.paa.model.dto.technology.TechnologyProjectsDTO;
 import it.paa.model.dto.technology.TechnologyPutDTO;
 import it.paa.model.entity.Employee;
 import it.paa.model.entity.Technology;
@@ -66,6 +67,14 @@ public class TechnologyResource {
         }
 
         return Response.ok(employeeList).build();
+    }
+
+    @GET
+    @Path("/5_most_requested")
+    public Response getMostRequestedTechnologiy() {
+        List<TechnologyProjectsDTO> technologiesList = technologyService.getMostRequestedTechnology();
+
+        return Response.ok(technologiesList).build();
     }
 
     @POST
