@@ -11,7 +11,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -52,7 +51,7 @@ public class Employee {
     @OneToMany(mappedBy = "employee")
     @JsonBackReference
     @JsonIgnore
-    private List<Customer> customerList;
+    private Set<Customer> customerList;
 
     @ManyToMany(mappedBy = "employeesList")
     @JsonIgnore
@@ -127,11 +126,11 @@ public class Employee {
         this.experienceLevel = experienceLevel;
     }
 
-    public List<Customer> getCustomerList() {
+    public Set<Customer> getCustomerList() {
         return customerList;
     }
 
-    public void setCustomerList(List<Customer> customerList) {
+    public void setCustomerList(Set<Customer> customerList) {
         this.customerList = customerList;
     }
 

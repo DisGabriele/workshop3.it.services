@@ -8,7 +8,7 @@ public class CustomerPutDTO {
     private String sector;
     private String address;
 
-    @JsonProperty("customer_id")
+    @JsonProperty("contact_person_id")
     private Long employeeId;
 
     public CustomerPutDTO() {

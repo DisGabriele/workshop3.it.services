@@ -1,6 +1,7 @@
 package it.paa.resource;
 
 import it.paa.model.dto.employee.EmployeePostDTO;
+import it.paa.model.dto.employee.EmployeeProjectsCustomersDTO;
 import it.paa.model.dto.employee.EmployeePutDTO;
 import it.paa.model.entity.*;
 import it.paa.service.EmployeeService;
@@ -89,7 +90,7 @@ public class EmployeeResource {
         try {
             Employee employee = employeeService.getById(employeeId);
 
-            List<Customer> customerList = employee.getCustomerList();
+            Set<Customer> customerList = employee.getCustomerList();
 
             if (customerList.isEmpty())
                 return Response.status(Response.Status.NO_CONTENT)
@@ -138,6 +139,26 @@ public class EmployeeResource {
                         .build();
 
             return Response.ok(technologiesList).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/employee_id/{employee_id}/technologies_and_clients")
+    public Response getTechnologiesAndClients(@PathParam("employee_id") Long employeeId) {
+        try {
+            Employee employee = employeeService.getById(employeeId);
+
+            EmployeeProjectsCustomersDTO employeeDto = new EmployeeProjectsCustomersDTO();
+            employeeDto.setEmployee(employee);
+            employeeDto.setProjects(employee.getProjectList());
+            employeeDto.setCustomers(employee.getCustomerList());
+
+            return Response.ok(employeeDto).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .type(MediaType.TEXT_PLAIN)
@@ -229,7 +250,6 @@ public class EmployeeResource {
         if (employeeDTO.isAllEmpty())
             return Response.status(Response.Status.NOT_MODIFIED).build();
         try {
-
             Employee old = employeeService.getById(employee_id);
             if (employeeDTO.getName() != null)
                 old.setName(employeeDTO.getName());
