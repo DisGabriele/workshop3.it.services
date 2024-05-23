@@ -104,16 +104,16 @@ public class EmployeeService implements EmployeeRepository {
     @Override
     @Transactional
     public void delete(Long id) throws NotFoundException, BadRequestException {
-        try{
+        try {
 
-        Employee employee = getById(id);
+            Employee employee = getById(id);
 
-        if (!employee.getCustomerList().isEmpty())
-            throw new BadRequestException("cannot delete employee because has associated customers");
+            if (!employee.getCustomerList().isEmpty())
+                throw new BadRequestException("cannot delete employee because has associated customers");
 
-        entityManager.remove(employee);
-        entityManager.flush();
-        } catch (org.hibernate.exception.ConstraintViolationException e){
+            entityManager.remove(employee);
+            entityManager.flush();
+        } catch (org.hibernate.exception.ConstraintViolationException e) {
             throw new BadRequestException("cannot delete employee because has associated projects");
         }
     }
@@ -131,14 +131,14 @@ public class EmployeeService implements EmployeeRepository {
 
     @Override
     @Transactional
-    public void addTechnology(Long employeeId, Long technologyId) throws NotFoundException,IllegalArgumentException {
+    public void addTechnology(Long employeeId, Long technologyId) throws NotFoundException, IllegalArgumentException {
         Employee employee = getById(employeeId);
         Technology technology = getTechnologyById(technologyId);
 
-        if(employee.getExperienceLevel() < technology.getMinExperienceLevel())
-            throw new IllegalArgumentException("employee experience level (" + employee.getExperienceLevel() +") does not meet technology level required (" + technology.getMinExperienceLevel() + ")");
+        if (employee.getExperienceLevel() < technology.getMinExperienceLevel())
+            throw new IllegalArgumentException("employee experience level (" + employee.getExperienceLevel() + ") does not meet technology level required (" + technology.getMinExperienceLevel() + ")");
 
-        if(employee.getTechnologiesList().contains(technology))
+        if (employee.getTechnologiesList().contains(technology))
             throw new IllegalArgumentException("employee already assigned to this technology");
 
         employee.addTechnology(technology);
@@ -151,7 +151,7 @@ public class EmployeeService implements EmployeeRepository {
         Employee employee = getById(employeeId);
         Technology technology = getTechnologyById(technologyId);
 
-        if(!employee.getTechnologiesList().contains(technology))
+        if (!employee.getTechnologiesList().contains(technology))
             throw new IllegalArgumentException("employee does not have this technology");
 
         employee.removeTechnology(technology);
