@@ -136,10 +136,10 @@ public class EmployeeService implements EmployeeRepository {
         Technology technology = getTechnologyById(technologyId);
 
         if(employee.getExperienceLevel() < technology.getMinExperienceLevel())
-            throw new IllegalArgumentException("employee experience level does not meet technology level required");
+            throw new IllegalArgumentException("employee experience level (" + employee.getExperienceLevel() +") does not meet technology level required (" + technology.getMinExperienceLevel() + ")");
 
         if(employee.getTechnologiesList().contains(technology))
-            throw new IllegalArgumentException("employee already has this technology");
+            throw new IllegalArgumentException("employee already assigned to this technology");
 
         employee.addTechnology(technology);
         entityManager.merge(employee);
