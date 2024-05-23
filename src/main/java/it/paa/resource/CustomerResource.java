@@ -140,20 +140,10 @@ public class CustomerResource {
     @PUT
     @Path("/customer_id/{customer_id}/remove_contact_person")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeContactPerson(@PathParam("customer_id") Long customer_id) {
+    public Response removeContactPerson(@PathParam("customer_id") Long customerId) {
         try {
-            Customer customer = customerService.getById(customer_id);
-            customer.setEmployee(null);
-
-            try {
-                return Response.ok(customerService.update(customer)).build();
-            } catch (ConstraintViolationException e) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .type(MediaType.TEXT_PLAIN)
-                        .entity(e.getMessage())
-                        .build();
-            }
-        } catch (NotFoundException e) {
+            return Response.ok(customerService.removeContactPerson(customerId)).build();
+        }  catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .type(MediaType.TEXT_PLAIN)
                     .entity(e.getMessage())
@@ -164,7 +154,7 @@ public class CustomerResource {
     @DELETE
     @Path("//customer_id/{customer_id}")
     public Response delete(@PathParam("customer_id") Long customer_id) {
-        try{
+        try {
             customerService.delete(customer_id);
             return Response.ok().build();
         } catch (NotFoundException e) {

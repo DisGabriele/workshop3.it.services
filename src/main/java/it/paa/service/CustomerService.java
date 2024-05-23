@@ -86,6 +86,20 @@ public class CustomerService implements CustomerRepository {
         }
     }
 
+    @Transactional
+    public Customer removeContactPerson (Long customerId) throws NotFoundException {
+            Customer customer = getById(customerId);
+            if(customer.getEmployee() != null){
+                Employee employee = customer.getEmployee();
+                employee.getCustomerList().remove(customer);
+                customer.setEmployee(null);
+                entityManager.merge(employee);
+                entityManager.merge(customer);
+            }
+            return customer;
+    }
+
+
     @Override
     @Transactional
     public void delete(Long id) throws ConstraintViolationException {
