@@ -1,4 +1,4 @@
-# (database = workshop3_it_services)
+# DATABASE: workshop3_it_services
 
 # it.services
 
