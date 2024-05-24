@@ -1,3 +1,5 @@
+# (database = workshop3_it_services)
+
 # it.services
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
