@@ -25,6 +25,9 @@ public class TechnologyService implements TechnologyRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /*
+    get all che o restituisce la lista intera o filtrata se vengono passati i filtri
+    */
     @Override
     public List<Technology> getAll(String name, Integer minExperienceLevel) throws NoContentException {
         String query = "SELECT t FROM Technology t";
@@ -61,6 +64,9 @@ public class TechnologyService implements TechnologyRepository {
         return technologiesList;
     }
 
+    /*
+    get by id che torna l'eccezione se non trova l'oggetto
+    */
     @Override
     public Technology getById(Long id) throws NotFoundException {
         Technology technology = entityManager.find(Technology.class, id);
@@ -72,6 +78,9 @@ public class TechnologyService implements TechnologyRepository {
         return technology;
     }
 
+    /*
+    save che se vengono violati dei validatori, torna l'eccezione
+    */
     @Override
     @Transactional
     public Technology save(Technology technology) throws ConstraintViolationException {
@@ -85,6 +94,9 @@ public class TechnologyService implements TechnologyRepository {
         }
     }
 
+    /*
+    update che se vengono violati dei validatori, torna l'eccezione
+    */
     @Override
     @Transactional
     public Technology update(Technology technology) throws ConstraintViolationException {
@@ -98,6 +110,9 @@ public class TechnologyService implements TechnologyRepository {
         }
     }
 
+    /*
+    delete che torna eccezione se l'oggetto ha associazioni o se non lo trova
+    */
     @Override
     @Transactional
     public void delete(Long id) throws NotFoundException {
@@ -105,9 +120,13 @@ public class TechnologyService implements TechnologyRepository {
         entityManager.remove(technology);
     }
 
-    public List<TechnologyProjectsDTO> getMostRequestedTechnology() {
+    /*
+    metodo usato per la 2° esercitazione (tecnologia piu' richiesta)
+    */
+
+    public List<TechnologyProjectsDTO> get5MostRequestedTechnology() {
         /*
-        sono andato a prendere tecnologie che hanno almeno un dipendente e di quei dipendenti
+        ricerca tecnologie che hanno almeno un dipendente e di quei dipendenti
         prendo solo quelli che hanno almeno un cliente e un progetto
         */
         String query = "select distinct t.* from technologies t" +
@@ -117,6 +136,9 @@ public class TechnologyService implements TechnologyRepository {
 
         List<Technology> technologiesList = entityManager.createNativeQuery(query, Technology.class).getResultList();
 
+        /*
+        ordinamento di queste tecnologie in base alla somma del numero dei clienti dei dipendenti associati
+        */
         List<Technology> sortedTechnologies = technologiesList.stream()
                 .sorted((t1, t2) -> {
                     List<Customer> customerList1 = t1.getEmployeesList().stream()
@@ -131,17 +153,24 @@ public class TechnologyService implements TechnologyRepository {
                 })
                 .limit(5)
                 .toList();
+        /*
+        ritorno della lista del dto con tecnologia, numero clienti e lista progetti
+        */
         List<TechnologyProjectsDTO> technologyProjectsDTOList = new ArrayList<>();
 
         sortedTechnologies.forEach(technology -> {
             TechnologyProjectsDTO technologyProjectsDTO = new TechnologyProjectsDTO();
             technologyProjectsDTO.setTechnology(technology);
 
+            /*
+            set progetti per togliere duplicati in caso di piu' dipendenti sugli stessi progetti
+            */
             Set<Project> projectSet = technology.getEmployeesList().stream()
                     .flatMap(employee -> employee.getProjectList().stream())
                     .collect(Collectors.toSet());
             technologyProjectsDTO.setProjectList(projectSet);
 
+            //calcolarmi la somma dei clienti associati ai dipentente
             int count = technology.getEmployeesList().stream()
                     .map(employee -> employee.getCustomerList().size())
                     .reduce(Integer::sum)

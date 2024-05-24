@@ -20,6 +20,9 @@ public class CustomerService implements CustomerRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /*
+    get all che o restituisce la lista intera o filtrata se vengono passati i filtri
+    */
     @Override
     public List<Customer> getAll(String name, String sector) throws NoContentException {
         String query = "SELECT c FROM Customer c";
@@ -50,6 +53,9 @@ public class CustomerService implements CustomerRepository {
         return customerList;
     }
 
+    /*
+    get by id che torna l'eccezione se non trova l'oggetto
+    */
     @Override
     public Customer getById(Long id) throws NotFoundException {
         Customer customer = entityManager.find(Customer.class, id);
@@ -60,6 +66,9 @@ public class CustomerService implements CustomerRepository {
         return customer;
     }
 
+    /*
+    save che se vengono violati dei validatori, torna l'eccezione
+    */
     @Override
     @Transactional
     public Customer save(Customer customer) throws ConstraintViolationException {
@@ -73,6 +82,9 @@ public class CustomerService implements CustomerRepository {
         }
     }
 
+    /*
+    update che se vengono violati dei validatori, torna l'eccezione
+    */
     @Override
     @Transactional
     public Customer update(Customer customer) throws ConstraintViolationException {
@@ -86,6 +98,9 @@ public class CustomerService implements CustomerRepository {
         }
     }
 
+    /*
+    rimozione del dipendente associato al cliente
+    */
     @Transactional
     public Customer removeContactPerson (Long customerId) throws NotFoundException {
             Customer customer = getById(customerId);
@@ -99,7 +114,9 @@ public class CustomerService implements CustomerRepository {
             return customer;
     }
 
-
+    /*
+    delete che torna eccezione se l'oggetto ha associazioni o se non lo trova
+    */
     @Override
     @Transactional
     public void delete(Long id) throws ConstraintViolationException {
@@ -107,6 +124,9 @@ public class CustomerService implements CustomerRepository {
         entityManager.remove(customer);
     }
 
+    /*
+    get employee usato per l'associazione con employee
+    */
     public Employee getEmployeeById(Long id) throws NotFoundException {
         Employee employee = entityManager.find(Employee.class, id);
 

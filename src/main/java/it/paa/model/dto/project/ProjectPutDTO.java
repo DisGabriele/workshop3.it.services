@@ -3,6 +3,11 @@ package it.paa.model.dto.project;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/*
+DTO per la PUT di project. differenze con oggetto originale:
+possibilità di non mettere per forza tutti i dati che normalmente devono essere not null nella POST;
+startDate e endDate come string per comodità, in modo da passarla nel formato mm-dd-yyyy o yyyy-mm-dd;
+*/
 public class ProjectPutDTO {
     private String name;
 
@@ -48,6 +53,7 @@ public class ProjectPutDTO {
         this.endDate = endDate;
     }
 
+    //usato per la put per verificare se l'oggetto non sia cambiato, per dare response 304
     @JsonIgnore
     public boolean isAllEmpty() {
         return name == null &&

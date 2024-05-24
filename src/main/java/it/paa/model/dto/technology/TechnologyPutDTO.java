@@ -3,6 +3,10 @@ package it.paa.model.dto.technology;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/*
+DTO per la PUT di technology. differenze con oggetto originale:
+possibilità di non mettere per forza tutti i dati che normalmente devono essere not null nella POST;
+*/
 public class TechnologyPutDTO {
     private String name;
     private String description;
@@ -36,6 +40,7 @@ public class TechnologyPutDTO {
         this.minExperienceLevel = minExperienceLevel;
     }
 
+    //usato per la put per verificare se l'oggetto non sia cambiato, per dare response 304
     @JsonIgnore
     public boolean isAllEmpty() {
         return name == null &&

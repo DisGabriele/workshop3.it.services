@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 
+/*
+DTO per la POST di project. differenze con oggetto originale:
+id assente;
+startDate e endDate come string per comodità, in modo da passarla nel formato mm-dd-yyyy o yyyy-mm-dd;
+*/
 public class ProjectPostDTO {
 
     @NotBlank(message = "name cannot be empty")

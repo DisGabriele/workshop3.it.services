@@ -27,8 +27,10 @@ public class EmployeeResource {
     @Inject
     EmployeeService employeeService;
 
+    //get all con filtri facoltativi
     @GET
-    public Response getAll(@QueryParam("surname") String surname, @QueryParam("start date") String startDateString, @QueryParam("end date") String endDateString) {
+    public Response getAll(@QueryParam("surname") String surname, @QueryParam("hiring date start interval") String startDateString, @QueryParam("hiring date end interval") String endDateString) {
+        //passaggio delle date da stringa a LocalDate (fatto per dare la possibilità di passarla in 2 possibili formati)
         try {
             LocalDate startDate = null;
             LocalDate endDate = null;
@@ -68,6 +70,7 @@ public class EmployeeResource {
         }
     }
 
+    //get by id
     @GET
     @Path("/employee_id/{employee_id}")
     public Response getById(@PathParam("employee_id") Long employeeId) {
@@ -84,6 +87,7 @@ public class EmployeeResource {
         }
     }
 
+    //get lista clienti da un dipendente
     @GET
     @Path("/employee_id/{employee_id}/customers")
     public Response getCustomers(@PathParam("employee_id") Long employeeId) {
@@ -105,6 +109,7 @@ public class EmployeeResource {
         }
     }
 
+    //get lista progetti da un dipendente
     @GET
     @Path("/employee_id/{employee_id}/projects")
     public Response getProjects(@PathParam("employee_id") Long employeeId) {
@@ -126,6 +131,7 @@ public class EmployeeResource {
         }
     }
 
+    //get lista tecnologie da un dipendente
     @GET
     @Path("/employee_id/{employee_id}/technologies")
     public Response getTechnologies(@PathParam("employee_id") Long employeeId) {
@@ -147,12 +153,14 @@ public class EmployeeResource {
         }
     }
 
+    //get lista clienti e tecnologie da un dipendente (esercitazione avanzata 1)
     @GET
     @Path("/employee_id/{employee_id}/technologies_and_clients")
     public Response getTechnologiesAndClients(@PathParam("employee_id") Long employeeId) {
         try {
             Employee employee = employeeService.getById(employeeId);
 
+            //usato un dto specifico
             EmployeeProjectsCustomersDTO employeeDto = new EmployeeProjectsCustomersDTO();
             employeeDto.setEmployee(employee);
             employeeDto.setProjects(employee.getProjectList());
@@ -167,12 +175,15 @@ public class EmployeeResource {
         }
     }
 
+    //post dipendente
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(@Valid EmployeePostDTO employeeDTO) {
+        //controllo per evitare crash in caso di json nullo
         if (employeeDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
+        //passaggio data da stringa a LocalDate
         LocalDate hiringDate = null;
 
         if (employeeDTO.getHiringDate() != null) {
@@ -186,6 +197,7 @@ public class EmployeeResource {
             }
         }
 
+        //ricerca del ruolo
         Role role;
         try {
             role = employeeService.getRoleByName(employeeDTO.getRoleName());
@@ -203,6 +215,14 @@ public class EmployeeResource {
         else
             employee.setExperienceLevel(employeeDTO.getExperienceLevel());
 
+        /*
+        controllo sul salario: (validazione avanzata 1)
+        1)salario minimo ruolo specificato (null o =0):
+        si prende quello inserito o 0 se null;
+        2)salario minimo ruolo specificato (>0)
+        se non è specificato, allora si prende quello minimo, altrimenti; fa il controllo
+        sul salario > salario minimo del ruolo
+         */
         if (role.getMinSalary() == null || role.getMinSalary().equals(0)) {
             if (employeeDTO.getSalary() == null || employeeDTO.getSalary().equals(0))
                 employee.setSalary(0);
@@ -220,6 +240,7 @@ public class EmployeeResource {
                 employee.setSalary(employeeDTO.getSalary());
         }
 
+        //passaggio dati tra dto e oggetto originale
         employee.setName(employeeDTO.getName());
         employee.setSurname(employeeDTO.getSurname());
         employee.setHiringDate(hiringDate);
@@ -239,18 +260,22 @@ public class EmployeeResource {
 
     }
 
+    //update dipendente
     @PUT
     @Path("/employee_id/{employee_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("employee_id") Long employee_id, EmployeePutDTO employeeDTO) {
-
+        //controllo per evitare crash in caso di json nullo
         if (employeeDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
+        //controllo in caso di json vuoto
         if (employeeDTO.isAllEmpty())
             return Response.status(Response.Status.NOT_MODIFIED).build();
         try {
             Employee old = employeeService.getById(employee_id);
+
+            //set di ogni parametro nun nullo nel json, con eventuali controlli dove necessario
             if (employeeDTO.getName() != null)
                 old.setName(employeeDTO.getName());
 
@@ -323,6 +348,7 @@ public class EmployeeResource {
         }
     }
 
+    //aggiunta tecnologia a dipendente
     @PUT
     @Path("/employee_id/{employee_id}/add_technology/{technology_id}")
     public Response addTechnology(@PathParam("employee_id") Long employeeId, @PathParam("technology_id") Long technologyId) {
@@ -342,6 +368,7 @@ public class EmployeeResource {
         }
     }
 
+    //rimozione tecnologia a dipendente
     @PUT
     @Path("/employee_id/{employee_id}/remove_technology/{technology_id}")
     public Response removeTechnology(@PathParam("employee_id") Long employeeId, @PathParam("technology_id") Long technologyId) {
@@ -361,6 +388,7 @@ public class EmployeeResource {
         }
     }
 
+    //delete dipendente
     @DELETE
     @Path("/employee_id/{employee_id}")
     public Response delete(@PathParam("employee_id") Long employee_id) {

@@ -4,6 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
+/*
+DTO per la POST di employee. differenze con oggetto originale:
+id assente;
+role name in modo da passare direttamente il nome del ruolo, essendo univoco, per comodità;
+hiring date come string per comodità, in modo da passarla nel formato mm-dd-yyyy o yyyy-mm-dd;
+*/
 public class EmployeePostDTO {
     @NotBlank(message = "name cannot be empty")
     private String name;

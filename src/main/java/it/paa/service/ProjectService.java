@@ -21,6 +21,9 @@ public class ProjectService implements ProjectRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /*
+    get all che o restituisce la lista intera o filtrata se vengono passati i filtri
+    */
     @Override
     public List<Project> getAll(String name, LocalDate startDate, LocalDate endDate) throws NoContentException, IllegalArgumentException {
         String query = "SELECT p FROM Project p";
@@ -65,6 +68,9 @@ public class ProjectService implements ProjectRepository {
         return projectList;
     }
 
+    /*
+    get by id che torna l'eccezione se non trova l'oggetto
+    */
     @Override
     public Project getById(Long id) throws NotFoundException {
         Project project = entityManager.find(Project.class, id);
@@ -75,6 +81,9 @@ public class ProjectService implements ProjectRepository {
         return project;
     }
 
+    /*
+    save che se vengono violati dei validatori, torna l'eccezione
+    */
     @Override
     @Transactional
     public Project save(Project project) throws ConstraintViolationException {
@@ -88,6 +97,9 @@ public class ProjectService implements ProjectRepository {
         }
     }
 
+    /*
+    update che se vengono violati dei validatori, torna l'eccezione
+    */
     @Override
     @Transactional
     public Project update(Project project) throws ConstraintViolationException {
@@ -101,6 +113,9 @@ public class ProjectService implements ProjectRepository {
         }
     }
 
+    /*
+    rimozione che torna l'eccezione se non trova l'oggetto
+    */
     @Override
     @Transactional
     public void delete(Long id) throws NotFoundException {
@@ -108,6 +123,9 @@ public class ProjectService implements ProjectRepository {
         entityManager.remove(project);
     }
 
+    /*
+    aggiunta dipendente al progetto
+    */
     @Override
     @Transactional
     public void addEmployee(Long projectId, Long employeeId) throws NotFoundException,IllegalArgumentException {
@@ -121,6 +139,9 @@ public class ProjectService implements ProjectRepository {
         entityManager.merge(project);
     }
 
+    /*
+    rimozione dipendente dal progetto
+    */
     @Override
     @Transactional
     public void removeEmployee(Long projectId, Long employeeId) throws NotFoundException, IllegalArgumentException {
@@ -134,6 +155,9 @@ public class ProjectService implements ProjectRepository {
         entityManager.merge(project);
     }
 
+    /*
+    get employee usato per l'associazione con employee
+    */
     public Employee getEmployeeById(Long id) throws NotFoundException {
         Employee employee = entityManager.find(Employee.class, id);
 

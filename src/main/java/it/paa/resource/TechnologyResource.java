@@ -22,6 +22,7 @@ public class TechnologyResource {
     @Inject
     TechnologyService technologyService;
 
+    //get all con filtri facoltativi
     @GET
     public Response getAll(@QueryParam("name") String name, @QueryParam("minimum experience level") Integer minimumExperienceLevel) {
         try{
@@ -33,6 +34,7 @@ public class TechnologyResource {
         }
     }
 
+    //get by id
     @GET
     @Path("/techology_id/{technology_id}")
     public Response getTechnologyById(@PathParam("technology_id") Long technologyId) {
@@ -47,6 +49,7 @@ public class TechnologyResource {
         }
     }
 
+    //get lista dipendenti di una tecnologia
     @GET
     @Path("/technology_id/{technology_id}/employees")
     public Response getEmployees(@PathParam("technology_id") Long technologyId) {
@@ -69,20 +72,24 @@ public class TechnologyResource {
         return Response.ok(employeeList).build();
     }
 
+    //get tecnologia piu' richiesta (esercitazione avanzata 2)
     @GET
     @Path("/5_most_requested")
-    public Response getMostRequestedTechnologiy() {
-        List<TechnologyProjectsDTO> technologiesList = technologyService.getMostRequestedTechnology();
+    public Response get5MostRequestedTechnologiy() {
+        List<TechnologyProjectsDTO> technologiesList = technologyService.get5MostRequestedTechnology();
 
         return Response.ok(technologiesList).build();
     }
 
+    //post tecnologia
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createTechnology(@Valid TechnologyPostDTO technologyDTO) {
+        //controllo per evitare crash in caso di json nullo
         if(technologyDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
+        //passaggio di dati dal dto all'oggetto base
         Technology technology = new Technology();
         technology.setName(technologyDTO.getName());
         technology.setDescription(technologyDTO.getDescription());
@@ -101,16 +108,20 @@ public class TechnologyResource {
         }
     }
 
+    //update tecnologia
     @PUT
     @Path("/technology_id/{technology_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("technology_id") Long technologyId, TechnologyPutDTO technologyDTO) {
+        //controllo per evitare crash in caso di json nullo
         if(technologyDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
+        //controllo in caso di json vuoto
         if (technologyDTO.isAllEmpty())
             return Response.status(Response.Status.NOT_MODIFIED).build();
 
+        //ricerca tecnologia tramite l'id inserito
         Technology old;
         try{
             old = technologyService.getById(technologyId);
@@ -121,6 +132,7 @@ public class TechnologyResource {
                     .build();
         }
 
+        //set di ogni parametro se passato non nullo nel json, con eventuali controlli dove necessario
         if(technologyDTO.getName() != null)
             old.setName(technologyDTO.getName());
 
@@ -140,6 +152,7 @@ public class TechnologyResource {
         }
     }
 
+    //delete tecnologia
     @DELETE
     @Path("/technology_id/{technology_id}")
     public Response delete(@PathParam("technology_id") Long technologyId) {

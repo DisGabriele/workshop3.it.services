@@ -6,12 +6,17 @@ import it.paa.model.entity.Project;
 import it.paa.model.entity.Technology;
 
 import java.util.Set;
-
-@JsonPropertyOrder({"technology", "clients_count", "projectList"})
+/*
+DTO per la 2° esercitazione avanzata (trovare le tecnologie piu' richieste dai clienti)
+client count corrisponde al numero dei clienti che hanno dipendenti associati, i quali stanno su
+almeno un progetto e hanno quella tecnologia
+*/
+@JsonPropertyOrder({"technology", "clients_count", "project_list"})
 public class TechnologyProjectsDTO {
     Technology technology;
     @JsonProperty("clients_count")
     int clientCount;
+    @JsonProperty("project_list")
     Set<Project> projectList;
 
     public TechnologyProjectsDTO() {}

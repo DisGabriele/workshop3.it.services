@@ -6,6 +6,9 @@ import it.paa.model.entity.Project;
 
 import java.util.Set;
 
+/*
+DTO usato per la 1° esercitazione avanzata (prendere employee con progetti e clienti associati)
+*/
 public class EmployeeProjectsCustomersDTO {
     private Employee employee;
     private Set<Project> projects;

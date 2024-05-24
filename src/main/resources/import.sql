@@ -1,4 +1,4 @@
-
+--script sql per inserimento di alcune entità per ogni tabella, senza associazioni
 insert into roles (id,name,minimum_salary)values
 (1, 'name1',0),
 (2, 'name2',10),

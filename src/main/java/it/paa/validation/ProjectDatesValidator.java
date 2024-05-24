@@ -6,7 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class ProjectDatesValidator implements ConstraintValidator<ProjectDates, Project> {
 
-
+    //implementazione validatore di Project per startDate e endDate
     @Override
     public boolean isValid(Project project, ConstraintValidatorContext context) {
         if(project.getStartDate() == null && project.getEndDate() == null)

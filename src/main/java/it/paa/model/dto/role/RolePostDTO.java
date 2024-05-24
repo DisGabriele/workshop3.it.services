@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
+/*
+DTO per la POST di role. differenze con oggetto originale:
+id assente;
+*/
 public class RolePostDTO {
     @NotBlank(message = "role name cannot be empty")
     private String name;

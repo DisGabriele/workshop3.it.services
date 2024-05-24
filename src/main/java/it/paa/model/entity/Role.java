@@ -10,9 +10,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Entity
+/*
+reso nome univoco, così nell inserimento del dipendente, si può inserire direttamente
+il nome del ruolo e non l'id
+ */
 @Table(name = "roles", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 public class Role {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

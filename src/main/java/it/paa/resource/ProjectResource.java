@@ -24,11 +24,13 @@ public class ProjectResource {
     @Inject
     ProjectService projectService;
 
+    //get all con filtri facoltativi
     @GET
     public Response getAll(@QueryParam("name") String name, @QueryParam("start date") String startDateString, @QueryParam("end date") String endDateString) {
         LocalDate startDate = null;
         LocalDate endDate = null;
 
+        //passaggio delle date da stringa a LocalDate (fatto per dare la possibilità di passarla in 2 possibili formati)
         if (startDateString != null) {
             try {
                 startDate = DateStringParser.parse(startDateString);
@@ -65,6 +67,7 @@ public class ProjectResource {
         }
     }
 
+    //get by id
     @GET
     @Path("/project_id/{project_id}")
     public Response getById(@PathParam("project_id") Long projectId) {
@@ -79,6 +82,7 @@ public class ProjectResource {
         }
     }
 
+    //get lista dipendenti da un progetto
     @GET
     @Path("/project_id/{project_id}/employees")
     public Response getEmployees(@PathParam("project_id") Long projectId) {
@@ -101,15 +105,18 @@ public class ProjectResource {
         return Response.ok(employeeList).build();
     }
 
+    //post progetto
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(@Valid ProjectPostDTO projectDTO) {
+        //controllo per evitare crash in caso di json nullo
         if (projectDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
         LocalDate startDate = null;
         LocalDate endDate = null;
 
+        //passaggio data da stringa a LocalDate
         if (projectDTO.getStartDate() != null) {
             try {
                 startDate = DateStringParser.parse(projectDTO.getStartDate());
@@ -132,6 +139,7 @@ public class ProjectResource {
             }
         }
 
+        //passaggio dati tra dto e oggetto originale
         Project project = new Project();
         project.setName(projectDTO.getName());
         project.setDescription(projectDTO.getDescription());
@@ -151,13 +159,16 @@ public class ProjectResource {
         }
     }
 
+    //update progetto
     @PUT
     @Path("/project_id/{project_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("project_id") Long projectId, ProjectPutDTO projectDTO) {
+        //controllo per evitare crash in caso di json nullo
         if (projectDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
+        //controllo in caso di json vuoto
         if (projectDTO.isAllEmpty())
             return Response.status(Response.Status.NOT_MODIFIED).build();
 
@@ -171,6 +182,7 @@ public class ProjectResource {
                     .build();
         }
 
+        //set di ogni parametro nun nullo nel json, con eventuali controlli dove necessario
         if (projectDTO.getName() != null)
             old.setName(projectDTO.getName());
 
@@ -213,6 +225,7 @@ public class ProjectResource {
         }
     }
 
+    //aggiunta dipendente a progetto
     @PUT
     @Path("/project_id/{project_id}/add_eployee/{employee_id}")
     public Response addEmployee(@PathParam("project_id") Long projectId, @PathParam("employee_id") Long employeeId) {
@@ -232,6 +245,7 @@ public class ProjectResource {
         }
     }
 
+    //rimozione dipendente a progetto
     @PUT
     @Path("/project_id/{project_id}/remove_eployee/{employee_id}")
     public Response removeEmployee(@PathParam("project_id") Long projectId, @PathParam("employee_id") Long employeeId) {
@@ -251,6 +265,7 @@ public class ProjectResource {
         }
     }
 
+    //delete progetto
     @DELETE
     @Path("/project_id/{project_id}")
     public Response delete(@PathParam("project_id") Long projectId) {

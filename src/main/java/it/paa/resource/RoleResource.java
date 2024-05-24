@@ -22,6 +22,7 @@ public class RoleResource {
     @Inject
     RoleService roleService;
 
+    //get all con filtri facoltativi
     @GET
     public Response getAll(@QueryParam("name") String name, @QueryParam("minimum_salary") Float minSalary) {
         try {
@@ -35,6 +36,7 @@ public class RoleResource {
         }
     }
 
+    //get by id
     @GET
     @Path("/role_id/{role_id}")
     public Response getById(@PathParam("role_id") Long id) {
@@ -51,6 +53,7 @@ public class RoleResource {
         }
     }
 
+    //get lista dipendenti da un ruolo
     @GET
     @Path("/role_id/{role_id}/employees")
     public Response getEmployees(@PathParam("role_id") Long id) {
@@ -72,6 +75,7 @@ public class RoleResource {
         }
     }
 
+    //post ruolo
     @POST
     public Response create(@Valid RolePostDTO roleDTO) {
         if (roleDTO == null)
@@ -101,6 +105,7 @@ public class RoleResource {
         }
     }
 
+    //update ruolo
     @PUT
     @Path("/role_id/{role_id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -144,6 +149,7 @@ public class RoleResource {
         }
     }
 
+    //delete ruolo
     @DELETE
     @Path("/role_id/{role_id}")
     public Response delete(@PathParam("role_id") Long id) {

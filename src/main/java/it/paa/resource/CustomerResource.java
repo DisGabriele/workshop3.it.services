@@ -21,6 +21,7 @@ public class CustomerResource {
     @Inject
     CustomerService customerService;
 
+    //get all con filtri facoltativi
     @GET
     public Response getAll(@QueryParam("name") String name, @QueryParam("sector") String sector) {
         try {
@@ -32,6 +33,7 @@ public class CustomerResource {
         }
     }
 
+    //get by id
     @GET
     @Path("/customer_id/{customer_id}")
     public Response getById(@PathParam("customer_id") Long customer_id) {
@@ -48,12 +50,15 @@ public class CustomerResource {
         }
     }
 
+    //post del cliente
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(@Valid CustomerPostDTO customerDTO) {
+        //controllo per evitare crash in caso di json nullo
         if (customerDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
+        //ricerca del dipendente in caso sia specificato nel json
         Employee employee = null;
         if (customerDTO.getEmployeeId() != null) {
             try {
@@ -66,6 +71,7 @@ public class CustomerResource {
             }
         }
 
+        //passaggio di dati dal dto all'oggetto base
         Customer customer = new Customer();
         customer.setName(customerDTO.getName());
         customer.setSector(customerDTO.getSector());
@@ -87,17 +93,21 @@ public class CustomerResource {
         }
     }
 
+    //update del cliente
     @PUT
     @Path("/customer_id/{customer_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("customer_id") Long customer_id, CustomerPutDTO customerDTO) {
+        //controllo per evitare crash in caso di json nullo
         if (customerDTO == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
 
+        //controllo in caso di json vuoto
         if (customerDTO.isAllEmpty())
             return Response.status(Response.Status.NOT_MODIFIED).build();
 
         try {
+            //set di ogni parametro nun nullo nel json, con eventuali controlli dove necessario
             Customer customer = customerService.getById(customer_id);
 
             if (customerDTO.getName() != null)
@@ -137,6 +147,7 @@ public class CustomerResource {
         }
     }
 
+    //rimozione del dipendente associato al cliente
     @PUT
     @Path("/customer_id/{customer_id}/remove_contact_person")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -151,8 +162,9 @@ public class CustomerResource {
         }
     }
 
+    //delete del dipendente
     @DELETE
-    @Path("//customer_id/{customer_id}")
+    @Path("/customer_id/{customer_id}")
     public Response delete(@PathParam("customer_id") Long customer_id) {
         try {
             customerService.delete(customer_id);

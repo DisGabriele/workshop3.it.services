@@ -16,7 +16,6 @@ import java.util.Set;
 @Entity
 @Table(name = "employees")
 public class Employee {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -56,7 +55,6 @@ public class Employee {
     @ManyToMany(mappedBy = "employeesList")
     @JsonIgnore
     private Set<Project> projectList;
-
 
     @ManyToMany
     @JoinTable(

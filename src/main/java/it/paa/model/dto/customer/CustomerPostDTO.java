@@ -3,8 +3,12 @@ package it.paa.model.dto.customer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 
+/*
+DTO per la POST di cstomer. differenze con oggetto originale:
+id assente;
+id di employee invece dell'oggetto intero
+*/
 public class CustomerPostDTO {
-
     @NotBlank(message = "name cannot be empty")
     private String name;
 

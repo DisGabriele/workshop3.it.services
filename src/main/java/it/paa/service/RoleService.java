@@ -21,6 +21,9 @@ public class RoleService implements RoleRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /*
+    get all che o restituisce la lista intera o filtrata se vengono passati i filtri
+    */
     @Override
     public List<Role> getAll(String name, Float min_salary) throws NoContentException {
         String query = "SELECT r FROM Role r";
@@ -52,6 +55,9 @@ public class RoleService implements RoleRepository {
         return roles;
     }
 
+    /*
+    get by id che torna l'eccezione se non trova l'oggetto
+    */
     @Override
     public Role getById(Long id) throws NotFoundException {
         Role role = entityManager.find(Role.class, id);
@@ -63,10 +69,16 @@ public class RoleService implements RoleRepository {
         return role;
     }
 
+    /*
+    save che se vengono violati dei validatori o viene inserito un nome già esistente, torna l'eccezione
+    */
     @Override
     @Transactional
     public Role save(Role role) throws PersistenceException, ConstraintViolationException {
         try {
+            /*
+            ricerca usata per l'univocità del nome del ruolo con ignore case
+            */
             String query = "SELECT r FROM Role r WHERE LOWER(r.name) = LOWER(:name)";
 
             List<Role> roles = entityManager.createQuery(query, Role.class)
@@ -87,10 +99,16 @@ public class RoleService implements RoleRepository {
         }
     }
 
+    /*
+    update che se vengono violati dei validatori o viene inserito un nome già esistente, torna l'eccezione
+    */
     @Override
     @Transactional
     public Role update(Role role) throws PersistenceException, ConstraintViolationException {
         try {
+            /*
+            ricerca usata per l'univocità del nome del ruolo con ignore case
+            */
             String query = "SELECT r FROM Role r WHERE LOWER(r.name) = LOWER(:name) AND r.id != :id";
 
             List<Role> roles = entityManager.createQuery(query, Role.class)
@@ -113,6 +131,9 @@ public class RoleService implements RoleRepository {
 
     }
 
+    /*
+    delete che torna eccezione se l'oggetto ha associazioni o se non lo trova
+    */
     @Override
     @Transactional
     public void delete(Long id) throws NotFoundException, BadRequestException{

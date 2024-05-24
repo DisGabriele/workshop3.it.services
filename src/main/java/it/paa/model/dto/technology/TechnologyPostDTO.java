@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
+/*
+DTO per la POST di technology. differenze con oggetto originale:
+id assente;
+*/
 public class TechnologyPostDTO {
 
     @NotBlank(message = "name cannot be empty")

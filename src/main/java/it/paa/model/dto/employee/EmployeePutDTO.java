@@ -3,6 +3,10 @@ package it.paa.model.dto.employee;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/*
+DTO per la PUT di employee. differenze con oggetto originale:
+possibilità di non mettere per forza tutti i dati che normalmente devono essere not null nella POST;
+*/
 public class EmployeePutDTO {
     private String name;
 
@@ -66,6 +70,7 @@ public class EmployeePutDTO {
         this.salary = salary;
     }
 
+    //usato per la put per verificare se l'oggetto non sia cambiato, per dare response 304
     @JsonIgnore
     public boolean isAllEmpty() {
         return this.name == null &&

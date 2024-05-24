@@ -24,6 +24,9 @@ public class EmployeeService implements EmployeeRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /*
+    get all che o restituisce la lista intera o filtrata se vengono passati i filtri
+    */
     @Override
     public List<Employee> getAll(String surname, LocalDate startDate, LocalDate endDate) throws NoContentException, IllegalArgumentException {
         String query = "SELECT e FROM Employee e";
@@ -65,6 +68,9 @@ public class EmployeeService implements EmployeeRepository {
         return employeeList;
     }
 
+    /*
+    get by id che torna l'eccezione se non trova l'oggetto
+    */
     @Override
     public Employee getById(Long id) throws NotFoundException {
         Employee employee = entityManager.find(Employee.class, id);
@@ -75,6 +81,9 @@ public class EmployeeService implements EmployeeRepository {
         return employee;
     }
 
+    /*
+    save che se vengono violati dei validatori, torna l'eccezione
+    */
     @Override
     @Transactional
     public Employee save(Employee employee) throws ConstraintViolationException {
@@ -88,6 +97,9 @@ public class EmployeeService implements EmployeeRepository {
         }
     }
 
+    /*
+    update che se vengono violati dei validatori, torna l'eccezione
+    */
     @Override
     @Transactional
     public Employee update(Employee employee) throws ConstraintViolationException {
@@ -101,6 +113,9 @@ public class EmployeeService implements EmployeeRepository {
         }
     }
 
+    /*
+    delete che torna eccezione se l'oggetto ha associazioni o se non lo trova
+    */
     @Override
     @Transactional
     public void delete(Long id) throws NotFoundException, BadRequestException {
@@ -118,7 +133,9 @@ public class EmployeeService implements EmployeeRepository {
         }
     }
 
-
+    /*
+    get by role name usato per la POST e PUT di employee
+     */
     public Role getRoleByName(String roleName) throws NoResultException {
         try {
             return entityManager.createQuery("SELECT r FROM Role r WHERE LOWER(r.name) = LOWER(:name)", Role.class)
@@ -129,6 +146,9 @@ public class EmployeeService implements EmployeeRepository {
         }
     }
 
+    /*
+    aggiunta tecnologia al dipendente
+     */
     @Override
     @Transactional
     public void addTechnology(Long employeeId, Long technologyId) throws NotFoundException, IllegalArgumentException {
@@ -145,6 +165,9 @@ public class EmployeeService implements EmployeeRepository {
         entityManager.merge(employee);
     }
 
+    /*
+    rimozione tecnologia dal dipendente
+     */
     @Override
     @Transactional
     public void removeTechnology(Long employeeId, Long technologyId) throws NotFoundException, IllegalArgumentException {
@@ -158,6 +181,9 @@ public class EmployeeService implements EmployeeRepository {
         entityManager.merge(employee);
     }
 
+    /*
+    ricerca tecnologia per la gestione di tecnologie del dipendente
+     */
     public Technology getTechnologyById(Long technologyId) throws NotFoundException {
         Technology technology = entityManager.find(Technology.class, technologyId);
 
